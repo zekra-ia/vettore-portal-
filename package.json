@@ -1,0 +1,40 @@
+{
+  "name": "zekra-forms-portal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ZEKRA IA çok kiracılı akıllı müşteri kayıt portalı (ilk kiracı: VETTOREHOME)",
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "db:migrate": "node scripts/migrate.mjs",
+    "db:seed": "node scripts/seed.mjs",
+    "test": "vitest run",
+    "e2e": "node scripts/e2e.mjs"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dejavu-fonts-ttf": "^2.37.3",
+    "docx": "^9.15.0",
+    "jose": "^6.2.14",
+    "next": "^16.4.3",
+    "pdfkit": "^0.20.2",
+    "postgres": "^4.0.0",
+    "qrcode": "^1.5.4",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^26.6.6",
+    "@types/pdfkit": "^0.17.7",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}
