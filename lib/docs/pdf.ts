@@ -1,11 +1,10 @@
 import PDFDocument from 'pdfkit';
 import path from 'node:path';
-import { existsSync } from 'node:fs';
+import { zekraLogo } from '../brand';
 import type { Printable, PSection } from './printable';
 
 // Türkçe karakterleri tam destekleyen DejaVu fontları npm paketinden gelir (depoda ikili dosya tutulmaz).
 const FONT_DIR = path.join(process.cwd(), 'node_modules', 'dejavu-fonts-ttf', 'ttf');
-const ZEKRA_LOGO = path.join(process.cwd(), 'assets', 'brand', 'zekra-logo.png');
 
 export async function renderPdf(p: Printable): Promise<Buffer> {
   const { primary, surface, ink } = p.meta.colors;
@@ -123,7 +122,7 @@ export async function renderPdf(p: Printable): Promise<Buffer> {
 
   // Altbilgi: her sayfada
   const range = doc.bufferedPageRange();
-  const hasLogo = existsSync(ZEKRA_LOGO);
+  const logo = zekraLogo();
   for (let i = range.start; i < range.start + range.count; i++) {
     doc.switchToPage(i);
     doc.page.margins.bottom = 0; // altbilgi kenar boşluğuna yazılırken yeni sayfa açılmasın
@@ -132,9 +131,13 @@ export async function renderPdf(p: Printable): Promise<Buffer> {
     doc.font('Sans').fontSize(7).fillColor('#8a8170')
       .text(`${p.meta.tenantName} · ${p.meta.formTitle} · ${p.meta.refNo} · Oluşturma: ${p.meta.generatedAt.toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' })}`, L, y, { width: W * 0.7, lineBreak: false });
     const right = L + W;
-    if (hasLogo) doc.image(ZEKRA_LOGO, right - 92, y - 3, { height: 12 });
-    doc.font('Sans').fontSize(6.5).fillColor('#8a8170').text('Powered by', right - (hasLogo ? 140 : 95), y + 0.5, { width: 45, lineBreak: false });
-    if (!hasLogo) doc.font('Brand').fontSize(7.5).fillColor('#1E6FD9').text('ZEKRA', right - 50, y, { continued: true, lineBreak: false }).fillColor('#5b5346').text(' IA', { lineBreak: false });
+    // Sağ alt: "Powered by [ZEKRA simgesi] ZEKRA IA"
+    const lw = logo ? 12 * logo.ratio : 0;
+    const textW = 40;
+    let x = right - textW;
+    doc.font('Brand').fontSize(7.5).fillColor('#1E6FD9').text('ZEKRA', x, y, { continued: true, lineBreak: false }).fillColor('#5b5346').text(' IA', { lineBreak: false });
+    if (logo) { x -= lw + 4; doc.image(logo.data, x, y - 3, { height: 12 }); }
+    doc.font('Sans').fontSize(6.5).fillColor('#8a8170').text('Powered by', x - 42, y + 0.5, { width: 40, align: 'right', lineBreak: false });
     doc.font('Sans').fontSize(6.5).fillColor('#b0a690').text(`${i + 1} / ${range.count}`, L, y + 10, { width: W, align: 'center', lineBreak: false });
   }
   doc.end();

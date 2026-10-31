@@ -2,8 +2,7 @@ import {
   AlignmentType, BorderStyle, Document, Footer, Header, ImageRun, Packer, PageNumber, Paragraph, ShadingType, Table, TableCell,
   TableRow, TextRun, WidthType,
 } from 'docx';
-import path from 'node:path';
-import { existsSync, readFileSync } from 'node:fs';
+import { zekraLogo } from '../brand';
 import type { Printable, PSection } from './printable';
 
 const hex = (c: string) => c.replace('#', '').toUpperCase();
@@ -13,7 +12,7 @@ const HAIR = { style: BorderStyle.SINGLE, size: 2, color: 'E4DCCD' };
 
 export async function renderDocx(p: Printable): Promise<Buffer> {
   const { primary, surface, ink } = p.meta.colors;
-  const zekraLogo = path.join(process.cwd(), 'assets', 'brand', 'zekra-logo.png');
+  const logo = zekraLogo();
 
   const sectionHeading = (s: PSection) => new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
@@ -81,8 +80,8 @@ export async function renderDocx(p: Printable): Promise<Buffer> {
     new TextRun({ children: [PageNumber.CURRENT], size: 13, color: '8A8170', font: FONT }),
     new TextRun({ text: '      Powered by ', size: 13, color: '8A8170', font: FONT }),
   ];
-  if (existsSync(zekraLogo)) footerRuns.push(new ImageRun({ type: 'png', data: readFileSync(zekraLogo), transformation: { width: 60, height: 14 } }));
-  else footerRuns.push(new TextRun({ text: 'ZEKRA', bold: true, size: 14, color: '1E6FD9', font: FONT }), new TextRun({ text: ' IA', bold: true, size: 14, color: '5B5346', font: FONT }));
+  if (logo) footerRuns.push(new ImageRun({ type: 'png', data: logo.data, transformation: { width: Math.round(14 * logo.ratio), height: 14 } }), new TextRun({ text: ' ', size: 13, font: FONT }));
+  footerRuns.push(new TextRun({ text: 'ZEKRA', bold: true, size: 14, color: '1E6FD9', font: FONT }), new TextRun({ text: ' IA', bold: true, size: 14, color: '5B5346', font: FONT }));
   const footer = new Footer({ children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: footerRuns })] });
 
   const metaPara = new Paragraph({ spacing: { after: 120 }, children: [

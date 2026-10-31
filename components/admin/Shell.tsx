@@ -13,7 +13,7 @@ function LicenseBanner({ t }: { t: Tenant }) {
   return null;
 }
 
-export default function Shell({ user, tenant, active, children }: { user: SessionUser; tenant: Tenant; active: 'apps' | 'links' | 'license'; children: React.ReactNode }) {
+export default function Shell({ user, tenant, active, children }: { user: SessionUser; tenant: Tenant; active: 'apps' | 'links' | 'license' | 'account'; children: React.ReactNode }) {
   const nav = [
     { k: 'apps', href: '/admin', label: 'Başvurular' },
     { k: 'links', href: '/admin/links', label: 'Bağlantı ve QR' },
@@ -32,7 +32,7 @@ export default function Shell({ user, tenant, active, children }: { user: Sessio
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-3 text-sm">
-            <span className="text-muted hidden sm:inline">{user.name}</span>
+            <Link href="/admin/account" className={`hover:text-ink ${active === 'account' ? 'text-ink underline' : 'text-muted'}`} title="Hesabım ve parola"><span className="hidden sm:inline">{user.name}</span><span className="sm:hidden">Hesabım</span></Link>
             <form action="/api/admin/logout" method="post"><button className="underline text-muted hover:text-ink">Çıkış</button></form>
           </div>
         </div>

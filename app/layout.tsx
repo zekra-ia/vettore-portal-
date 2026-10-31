@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: 'Müşteri Kayıt Portalı',
   description: 'Güvenli dijital müşteri bilgi formu',
   robots: { index: false, follow: false },
+  icons: { icon: '/brand/zekra-logo.png', apple: '/brand/zekra-logo.png' },
 };
 export const viewport: Viewport = { width: 'device-width', initialScale: 1, themeColor: '#F3EDE2' };
 
