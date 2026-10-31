@@ -10,7 +10,7 @@ const securityHeaders = [
 
 const config: NextConfig = {
   serverExternalPackages: ['pdfkit', 'postgres'],
-  outputFileTracingIncludes: { '/api/**': ['./node_modules/dejavu-fonts-ttf/ttf/DejaVuSans*.ttf', './forms/**', './assets/**'] },
+  outputFileTracingIncludes: { '/api/**': ['./node_modules/dejavu-fonts-ttf/ttf/DejaVuSans*.ttf', './forms/**', './assets/**', './public/brand/**'] },
   async headers() {
     return [
       { source: '/:path*', headers: securityHeaders },
