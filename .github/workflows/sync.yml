@@ -1,0 +1,29 @@
+name: tam-esitleme
+on:
+  push:
+    paths: ['sync.zip']
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          set -e
+          mkdir -p public/brand
+          for f in ZEKRA_IA_orijinal_simge_beyaz_fon.png zekra-logo.png; do
+            if [ -f "$f" ]; then mv -f "$f" public/brand/zekra-logo.png; fi
+          done
+          if [ -f sync.zip ]; then
+            mkdir -p /tmp/keep && cp public/brand/zekra-logo.png /tmp/keep/ 2>/dev/null || true
+            git ls-files | grep -v -e '^\.github/' -e '^sync\.zip$' | xargs -r -d '\n' git rm -q --
+            unzip -o sync.zip -d .
+            rm -f sync.zip
+            mkdir -p public/brand && cp /tmp/keep/zekra-logo.png public/brand/ 2>/dev/null || true
+          fi
+          git add -A
+          git config user.name "zekra-ia"
+          git config user.email "zekra.io2026@gmail.com"
+          git diff --cached --quiet || git commit -m "Güncelleme uygulandı (tam eşitleme)"
+          git push
