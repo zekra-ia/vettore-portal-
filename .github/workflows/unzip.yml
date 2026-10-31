@@ -1,0 +1,19 @@
+name: zip-ac
+on:
+  push:
+    paths: ['.github/workflows/unzip.yml']
+permissions:
+  contents: write
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          unzip -o vettore-portal.zip -d .
+          git rm -q vettore-portal.zip .github/workflows/unzip.yml
+          git add -A
+          git config user.name "zekra-ia"
+          git config user.email "zekra.io2026@gmail.com"
+          git commit -m "Kaynak kodu zip'ten çıkarıldı"
+          git push
