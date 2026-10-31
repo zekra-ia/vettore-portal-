@@ -1,0 +1,23 @@
+name: guncelleme-uygula
+on:
+  push:
+    paths: ['update.zip', 'ZEKRA_IA_orijinal_simge_beyaz_fon.png', 'zekra-logo.png']
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          set -e
+          if [ -f update.zip ]; then unzip -o update.zip -d . && git rm -q update.zip; fi
+          mkdir -p public/brand
+          for f in ZEKRA_IA_orijinal_simge_beyaz_fon.png zekra-logo.png; do
+            if [ -f "$f" ]; then git mv -f "$f" public/brand/zekra-logo.png 2>/dev/null || { mv -f "$f" public/brand/zekra-logo.png; git rm -q --cached "$f" || true; }; fi
+          done
+          git add -A
+          git config user.name "zekra-ia"
+          git config user.email "zekra.io2026@gmail.com"
+          git diff --cached --quiet || git commit -m "Güncelleme uygulandı"
+          git push
